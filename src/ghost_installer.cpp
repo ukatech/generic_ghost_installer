@@ -2,6 +2,7 @@
 #include <shlobj_core.h>
 #include "my-gists/ukagaka/SSP_Runner.hpp"
 #include "my-gists/windows/LoadStringFromResource.hpp"
+#include "ghost_installer.hpp"
 
 std::wstring download_temp_file(const std::wstring& url, const std::wstring& file_suffix);
 std::wstring get_ghost_url(){
@@ -27,18 +28,32 @@ int main() {
 		//download and install SSP
 		auto ssp_file=download_temp_file(L"http://ssp.shillest.net/archive/redir.cgi?stable&full", L".exe");
 		EXE_Runner SSP_EXE(ssp_file);
-		//Get the program (x86) directory for installation
-		std::wstring program_dir;
-		program_dir.reserve(MAX_PATH);
-		SHGetSpecialFolderPathW(NULL, program_dir.data(), CSIDL_PROGRAM_FILESX86, FALSE);
-		program_dir.resize(wcslen(program_dir.data()));
-		program_dir+=L"\\SSP";
-		SSP_EXE(L"-o\""+program_dir+L"\"");
 		//get language id
 		//show install path dialog
+		std::wstring program_dir=DefaultSSPinstallPath();
+		// program_dir = SOME_MAIGC;
+		
 		//install SSP(download zip & extract)
+		SSP_EXE(L"-o\""+program_dir+L"\"");
 		//chose&install language pack & ghost for starter
 		//install ghost
 	}
 	return 0;
+}
+
+std::wstring DefaultSSPinstallPath() {
+	#ifdef _DEBUG
+		std::wstring self_path;
+		self_path.resize(MAX_PATH);
+		GetModuleFileNameW(NULL, self_path.data(), MAX_PATH);
+		self_path = self_path.substr(0, self_path.find_last_of(L"\\"));
+		self_path += L"\\SSP";
+		return self_path;
+	#else
+		std::wstring program_dir;
+		program_dir.resize(MAX_PATH);
+		SHGetSpecialFolderPathW(NULL, program_dir.data(), CSIDL_PROGRAM_FILESX86, FALSE);
+		program_dir.resize(wcslen(program_dir.data()));
+		program_dir += L"\\SSP";
+	#endif
 }
