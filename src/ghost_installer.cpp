@@ -1,6 +1,7 @@
 #include <windows.h>
 #include <shlobj_core.h>
 #include "my-gists/ukagaka/SSP_Runner.hpp"
+#include "my-gists/windows/LoadStringFromResource.hpp"
 
 std::wstring download_temp_file(const std::wstring& url, const std::wstring& file_suffix);
 std::wstring get_ghost_url(){
@@ -29,7 +30,7 @@ int main() {
 		//Get the program (x86) directory for installation
 		std::wstring program_dir;
 		program_dir.reserve(MAX_PATH);
-		SHGetSpecialFolderPath(NULL, program_dir.data(), CSIDL_PROGRAM_FILESX86, FALSE);
+		SHGetSpecialFolderPathW(NULL, program_dir.data(), CSIDL_PROGRAM_FILESX86, FALSE);
 		program_dir.resize(wcslen(program_dir.data()));
 		program_dir+=L"\\SSP";
 		SSP_EXE(L"-o\""+program_dir+L"\"");
