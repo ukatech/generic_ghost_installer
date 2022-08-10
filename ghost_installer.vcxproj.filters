@@ -28,6 +28,9 @@
     <ClInclude Include="src\ghost_installer.hpp">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="src\resource\resource.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="src\resource\ghost_installer.rc">

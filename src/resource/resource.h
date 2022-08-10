@@ -2,7 +2,8 @@
 // Microsoft Visual C++ 生成的包含文件。
 // 供 ghost_installer.rc 使用
 //
-
+#define IDSELECT 						 100
+#define IDC_PATHEDIT 					 101
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED

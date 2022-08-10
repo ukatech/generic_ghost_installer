@@ -3,6 +3,7 @@
 #pragma code_page(65001)
 
 #include "resource.h"
+#include "windows.h"
 /////////////////////////////////////////////////////////////////////////////
 // 中文(简体，中国) resources
 
@@ -54,7 +55,7 @@ VS_VERSION_INFO VERSIONINFO
 BEGIN
     BLOCK "StringFileInfo"
     BEGIN
-        BLOCK "080404b0"
+        BLOCK "000004b0"
         BEGIN
             VALUE "CompanyName", "TODO: <公司名>"
             VALUE "FileDescription", "TODO: <文件说明>"
@@ -68,8 +69,55 @@ BEGIN
     END
     BLOCK "VarFileInfo"
     BEGIN
-        VALUE "Translation", 0x804, 1200
+        VALUE "Translation", 0x0, 1200
     END
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_INSTALLATION_PATH_SELECTION DIALOGEX 0, 0, 308, 58
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Dialog"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "确定",IDOK,169,39,50,14
+    PUSHBUTTON      "取消",IDCANCEL,251,39,50,14
+    PUSHBUTTON      "浏览",IDSELECT,265,18,36,12
+    EDITTEXT        IDC_PATHEDIT,16,18,244,12,ES_AUTOHSCROLL
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO
+BEGIN
+    IDD_INSTALLATION_PATH_SELECTION, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 301
+        TOPMARGIN, 4
+        BOTTOMMARGIN, 53
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// AFX_DIALOG_LAYOUT
+//
+
+IDD_INSTALLATION_PATH_SELECTION AFX_DIALOG_LAYOUT
+BEGIN
+    0
 END
 
 #endif    // 中文(简体，中国) resources

@@ -31,6 +31,12 @@ int main() {
 		auto ssp_file=download_temp_file(L"http://ssp.shillest.net/archive/redir.cgi?stable&full", L".exe");
 		EXE_Runner SSP_EXE(ssp_file);
 		//get language id
+		int lang_id=0;
+		{
+			wchar_t lang_id_str[5]={0};
+			GetLocaleInfo(LOCALE_USER_DEFAULT, LOCALE_ILANGUAGE, lang_id_str, 5);
+			lang_id=_wtoi(lang_id_str);
+		}
 		//show install path dialog
 		std::wstring program_dir=DefaultSSPinstallPath();
 		// program_dir = SOME_MAIGC;

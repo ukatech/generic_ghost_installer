@@ -25,6 +25,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\ghost_installer.hpp" />
+    <ClInclude Include="src\resource\resource.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="src\resource\ghost_installer.rc" />
