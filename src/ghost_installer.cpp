@@ -19,6 +19,8 @@ int main() {
 		try{
 			auto nar_file=download_temp_file(get_ghost_url(), L".nar");
 			SSP.install_nar(nar_file);
+			//We can't wait for ssp to terminate before deleting the nar file, because when ghost ends is up to the user
+			//So, no clearing of temporary files
 		}
 		catch(const std::exception& e) {
 			MessageBoxA(NULL, e.what(), "Error", MB_OK);
@@ -34,7 +36,7 @@ int main() {
 		// program_dir = SOME_MAIGC;
 		
 		//install SSP(download zip & extract)
-		SSP_EXE(L"-o\""+program_dir+L"\"");
+		SSP_EXE.RunAndWait(L"-o\"" + program_dir + L"\"", L"-y");
 		//chose&install language pack & ghost for starter
 		//install ghost
 	}

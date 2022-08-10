@@ -26,6 +26,9 @@
   <ItemGroup>
     <ClInclude Include="src\ghost_installer.hpp" />
   </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="src\resource\ghost_installer.rc" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
