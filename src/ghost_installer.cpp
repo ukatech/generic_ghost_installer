@@ -154,14 +154,10 @@ int APIENTRY WinMain(
 				return 1;
 			}
 		}
-
+		//set SSP_Runner's path
+		SSP.reset_path(ssp_install::program_dir + L"\\ssp.exe");
 		//get language id
-		int lang_id = 0;
-		{
-			wchar_t lang_id_str[5] = {0};
-			GetLocaleInfo(LOCALE_USER_DEFAULT, LOCALE_ILANGUAGE, lang_id_str, 5);
-			lang_id = _wtoi(lang_id_str);
-		}
+		auto langid = GetUserDefaultUILanguage();
 		//chose&install language pack & ghost for starter
 		//install ghost
 	}
