@@ -120,44 +120,47 @@ int APIENTRY WinMain(
 		}
 	}
 	else {
-		//download and install SSP
-		auto	   ssp_file = download_temp_file(L"http://ssp.shillest.net/archive/redir.cgi?stable&full", L".exe");
-		EXE_Runner SSP_EXE(ssp_file);
+		{
+			//download and install SSP
+			auto	   ssp_file = download_temp_file(L"http://ssp.shillest.net/archive/redir.cgi?stable&full", L".exe");
+			EXE_Runner SSP_EXE(ssp_file);
+			//show install path dialog
+			ssp_install::program_dir = DefaultSSPinstallPath();
+			auto install_path_scl_ui = CreateDialogW(hInstance, (LPCTSTR)IDD_INSTALLATION_PATH_SELECTION, NULL, (DLGPROC)InstallPathSelDlgProc);
+			ShowWindow(install_path_scl_ui, SW_SHOW);
+			{
+				MSG msg;
+				while(GetMessage(&msg, NULL, 0, 0)) {
+					TranslateMessage(&msg);
+					DispatchMessage(&msg);
+					if(ssp_install::ok_to_install)
+						break;
+				}
+			}
+			//create installation directory
+			switch(SHCreateDirectoryExW(NULL, ssp_install::program_dir.c_str(), NULL)) {
+			case ERROR_ALREADY_EXISTS:
+			case ERROR_SUCCESS:
+			case ERROR_FILE_EXISTS:
+				//install SSP
+				SSP_EXE.RunAndWait(L"-o\"" + ssp_install::program_dir + L"\"", L"-y");
+				//Delete temporary files
+				DeleteFileW(ssp_file.c_str());
+				break;
+			default:
+				//Delete temporary files
+				DeleteFileW(ssp_file.c_str());
+				MessageBoxW(NULL, L"Could not create installation directory.", L"Error", MB_OK);
+				return 1;
+			}
+		}
+
 		//get language id
 		int lang_id = 0;
 		{
 			wchar_t lang_id_str[5] = {0};
 			GetLocaleInfo(LOCALE_USER_DEFAULT, LOCALE_ILANGUAGE, lang_id_str, 5);
 			lang_id = _wtoi(lang_id_str);
-		}
-		//show install path dialog
-		ssp_install::program_dir = DefaultSSPinstallPath();
-		auto install_path_scl_ui = CreateDialogW(hInstance, (LPCTSTR)IDD_INSTALLATION_PATH_SELECTION, NULL, (DLGPROC)InstallPathSelDlgProc);
-		ShowWindow(install_path_scl_ui, SW_SHOW);
-		{
-			MSG msg;
-			while(GetMessage(&msg, NULL, 0, 0)) {
-				TranslateMessage(&msg);
-				DispatchMessage(&msg);
-				if(ssp_install::ok_to_install)
-					break;
-			}
-		}
-		//create installation directory
-		switch(SHCreateDirectoryExW(NULL, ssp_install::program_dir.c_str(), NULL)) {
-		case ERROR_ALREADY_EXISTS:
-		case ERROR_SUCCESS:
-		case ERROR_FILE_EXISTS:
-			//install SSP
-			SSP_EXE.RunAndWait(L"-o\"" + ssp_install::program_dir + L"\"", L"-y");
-			//Delete temporary files
-			DeleteFileW(ssp_file.c_str());
-			break;
-		default:
-			//Delete temporary files
-			DeleteFileW(ssp_file.c_str());
-			MessageBoxW(NULL, L"Could not create installation directory.", L"Error", MB_OK);
-			return 1;
 		}
 		//chose&install language pack & ghost for starter
 		//install ghost
