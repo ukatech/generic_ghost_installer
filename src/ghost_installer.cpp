@@ -8,6 +8,9 @@
 #include "resource/resource.h"
 #include "ghost_installer.hpp"
 
+//shlwapi.lib
+#pragma comment(lib, "shlwapi.lib")
+
 std::wstring download_temp_file(const std::wstring& url, const std::wstring& file_suffix);
 std::wstring get_ghost_url(){
 	#ifdef _DEBUG
@@ -19,76 +22,93 @@ std::wstring get_ghost_url(){
 
 namespace ssp_install {
 	std::wstring program_dir;
+	bool ok_to_install = false;
 }
+bool get_edit_Dia_text_as_path(std::wstring& path, HWND hDlg, WORD IDC) {
+	// Get number of characters.
+	size_t pathlen = SendDlgItemMessage(hDlg,
+										IDC,
+										EM_LINELENGTH,
+										(WPARAM)0,
+										(LPARAM)0);
+	if(pathlen == 0) {
+		MessageBox(hDlg,
+				   L"No characters entered.",
+				   L"Error",
+				   MB_OK);
+		return false;
+	}
 
+	// Put the number of characters into first word of buffer.
+	path.resize(pathlen);
+	path[0] = (wchar_t)pathlen;
+
+	// Get the characters.
+	SendDlgItemMessage(hDlg,
+					   IDC,
+					   EM_GETLINE,
+					   (WPARAM)0,		// line 0
+					   (LPARAM)path.data());
+
+	//make sure the path is valid
+	if(!PathIsDirectory(path.c_str())) {
+		//Check if the parent directory exists
+		std::wstring parent_dir = path.substr(0, path.find_last_of(L"\\/"));
+		if(PathIsDirectory(parent_dir.c_str())) {
+			return true;
+		}
+		else {
+			MessageBox(hDlg,
+					   L"The path is not a valid directory.",
+					   L"Error",
+					   MB_OK);
+			return false;
+		}
+	}
+	return true;
+}
 LRESULT CALLBACK InstallPathSelDlgProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lp) {
 	using namespace ssp_install;
 	switch(message) {
 	case WM_INITDIALOG:
+		SetDlgItemText(hDlg, IDC_PATHEDIT, program_dir.c_str());
 		SetFocus(GetDlgItem(hDlg, IDC_PATHEDIT));
 		return FALSE;
 	case WM_COMMAND:
 		switch(LOWORD(wParam)) {
 		case IDOK: {
-			// Get number of characters.
-			size_t pathlen = SendDlgItemMessage(hDlg,
-												   IDC_PATHEDIT,
-												   EM_LINELENGTH,
-												   (WPARAM)0,
-												   (LPARAM)0);
-			if(pathlen == 0) {
-				MessageBox(hDlg,
-						   L"No characters entered.",
-						   L"Error",
-						   MB_OK);
-
+			if(get_edit_Dia_text_as_path(program_dir, hDlg, IDC_PATHEDIT)) {
 				EndDialog(hDlg, TRUE);
+				ok_to_install = true;
+				return TRUE;
+			}
+			else
 				return FALSE;
-			}
-
-			// Put the number of characters into first word of buffer.
-			program_dir.resize(pathlen);
-			program_dir[0] = (wchar_t)pathlen;
-
-			// Get the characters.
-			SendDlgItemMessage(hDlg,
-							   IDC_PATHEDIT,
-							   EM_GETLINE,
-							   (WPARAM)0,		// line 0
-							   (LPARAM)program_dir.data());
-
-			//make sure the path is valid
-			if(!PathIsDirectory(program_dir.c_str())) {
-				//Check if the parent directory exists
-				std::wstring parent_dir = program_dir.substr(0, program_dir.find_last_of(L"\\/"));
-				if(PathIsDirectory(parent_dir.c_str())) {
-					//Create the directory
-					if(!CreateDirectory(program_dir.c_str(), NULL)) {
-						MessageBox(hDlg,
-								   L"Could not create directory.",
-								   L"Error",
-								   MB_OK);
-						EndDialog(hDlg, TRUE);
-						return FALSE;
-					}
-				}
-				else {
-					MessageBox(hDlg,
-							   L"The path is not a valid directory.",
-							   L"Error",
-							   MB_OK);
-
-					EndDialog(hDlg, TRUE);
-					return FALSE;
-				}
-			}
-			
-			EndDialog(hDlg, TRUE);
-			return TRUE; 
 		}
 		case IDCANCEL:
 			EndDialog(hDlg, TRUE);
 			exit(0);
+		case IDSELECT:
+			//get path by browsing
+			//set browsing Root as IDC_PATHEDIT's text
+			{
+				BROWSEINFO bi;
+				ZeroMemory(&bi, sizeof(bi));
+				bi.hwndOwner = hDlg;
+				bi.pszDisplayName = new wchar_t[MAX_PATH];
+				bi.lpszTitle = L"Select installation path";
+				bi.ulFlags = BIF_RETURNONLYFSDIRS;
+				LPITEMIDLIST pidl = SHBrowseForFolder(&bi);
+				if(pidl != NULL) {
+					SHGetPathFromIDList(pidl, bi.pszDisplayName);
+					program_dir= bi.pszDisplayName;
+					if(!program_dir.ends_with(L"SSP"))
+						program_dir += L"\\SSP\\";
+					SetDlgItemText(hDlg, IDC_PATHEDIT, program_dir.c_str());
+				}
+				delete[] bi.pszDisplayName;
+				return TRUE;
+			}
 		default:
 			return FALSE;
 		}
@@ -128,13 +148,15 @@ int APIENTRY WinMain(
 			lang_id=_wtoi(lang_id_str);
 		}
 		//show install path dialog
-		std::wstring program_dir=DefaultSSPinstallPath();
+		ssp_install::program_dir	 = DefaultSSPinstallPath();
 		auto		 install_path_scl_ui = CreateDialogW(hInstance, (LPCTSTR)IDD_INSTALLATION_PATH_SELECTION, NULL, (DLGPROC)InstallPathSelDlgProc);
 		ShowWindow(install_path_scl_ui, SW_SHOW);
-		MSG			 msg;
+		MSG msg;
 		while(GetMessage(&msg, NULL, 0, 0)) {
 			TranslateMessage(&msg);
 			DispatchMessage(&msg);
+			if(ssp_install::ok_to_install)
+				break;
 		}
 		//install SSP(download zip & extract)
 		SSP_EXE.RunAndWait(L"-o\"" + program_dir + L"\"", L"-y");
