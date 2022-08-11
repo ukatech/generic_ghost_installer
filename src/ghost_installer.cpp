@@ -49,22 +49,6 @@ bool get_edit_Dia_text_as_path(std::wstring& path, HWND hDlg, WORD IDC) {
 					   EM_GETLINE,
 					   (WPARAM)0,		// line 0
 					   (LPARAM)path.data());
-
-	//make sure the path is valid
-	if(!PathIsDirectory(path.c_str())) {
-		//Check if the parent directory exists
-		std::wstring parent_dir = path.substr(0, path.find_last_of(L"\\/"));
-		if(PathIsDirectory(parent_dir.c_str())) {
-			return true;
-		}
-		else {
-			MessageBox(hDlg,
-					   L"The path is not a valid directory.",
-					   L"Error",
-					   MB_OK);
-			return false;
-		}
-	}
 	return true;
 }
 LRESULT CALLBACK InstallPathSelDlgProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lp) {
@@ -102,7 +86,7 @@ LRESULT CALLBACK InstallPathSelDlgProc(HWND hDlg, UINT message, WPARAM wParam, L
 				if(pidl != NULL) {
 					SHGetPathFromIDList(pidl, bi.pszDisplayName);
 					program_dir= bi.pszDisplayName;
-					if(!program_dir.ends_with(L"SSP"))
+					if(!program_dir.ends_with(L"SSP") || !program_dir.ends_with(L"SSP\\"))
 						program_dir += L"\\SSP\\";
 					SetDlgItemText(hDlg, IDC_PATHEDIT, program_dir.c_str());
 				}
@@ -151,17 +135,31 @@ int APIENTRY WinMain(
 		ssp_install::program_dir	 = DefaultSSPinstallPath();
 		auto		 install_path_scl_ui = CreateDialogW(hInstance, (LPCTSTR)IDD_INSTALLATION_PATH_SELECTION, NULL, (DLGPROC)InstallPathSelDlgProc);
 		ShowWindow(install_path_scl_ui, SW_SHOW);
-		MSG msg;
-		while(GetMessage(&msg, NULL, 0, 0)) {
-			TranslateMessage(&msg);
-			DispatchMessage(&msg);
-			if(ssp_install::ok_to_install)
-				break;
+		{
+			MSG msg;
+			while(GetMessage(&msg, NULL, 0, 0)) {
+				TranslateMessage(&msg);
+				DispatchMessage(&msg);
+				if(ssp_install::ok_to_install)
+					break;
+			}
 		}
-		//install SSP(download zip & extract)
-		SSP_EXE.RunAndWait(L"-o\"" + program_dir + L"\"", L"-y");
-		//Delete temporary files
-		DeleteFileW(ssp_file.c_str());
+		//create installation directory
+		switch(SHCreateDirectoryExW(NULL, ssp_install::program_dir.c_str(), NULL)){
+		case ERROR_ALREADY_EXISTS:
+		case ERROR_SUCCESS:
+		case ERROR_FILE_EXISTS:
+			//install SSP
+			SSP_EXE.RunAndWait(L"-o\"" + ssp_install::program_dir + L"\"", L"-y");
+			//Delete temporary files
+			DeleteFileW(ssp_file.c_str());
+			break;
+		default:
+			//Delete temporary files
+			DeleteFileW(ssp_file.c_str());
+			MessageBoxW(NULL, L"Could not create installation directory.", L"Error", MB_OK);
+			return 1;
+		}
 		//chose&install language pack & ghost for starter
 		//install ghost
 	}
@@ -182,5 +180,6 @@ std::wstring DefaultSSPinstallPath() {
 		SHGetSpecialFolderPathW(NULL, program_dir.data(), CSIDL_PROGRAM_FILESX86, FALSE);
 		program_dir.resize(wcslen(program_dir.data()));
 		program_dir += L"\\SSP";
+		return program_dir;
 	#endif
 }
