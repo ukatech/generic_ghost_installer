@@ -4,6 +4,7 @@
 //
 #define IDSELECT 						 100
 #define IDC_PATHEDIT 					 101
+#define IDD_INSTALLATION_PATH_SELECTION 					 102
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
