@@ -107,61 +107,77 @@ int APIENTRY WinMain(
 	_In_opt_ HINSTANCE hPrevInstance,
 	_In_ LPSTR		   lpCmdLine,
 	_In_ int		   nShowCmd) {
-	SSP_Runner SSP;
-	if(SSP.IsInstalled()) {
-		try {
+	try {
+		SSP_Runner SSP;
+		if(SSP.IsInstalled()) {
 			auto nar_file = download_temp_file(get_ghost_url(), L".nar");
 			SSP.install_nar(nar_file);
 			//We can't wait for ssp to terminate before deleting the nar file, because when ghost ends is up to the user
 			//So, no clearing of temporary files
 		}
-		catch(const std::exception& e) {
-			MessageBoxA(NULL, e.what(), "Error", MB_OK);
-		}
-	}
-	else {
-		{
-			//download and install SSP
-			auto	   ssp_file = download_temp_file(L"http://ssp.shillest.net/archive/redir.cgi?stable&full", L".exe");
-			EXE_Runner SSP_EXE(ssp_file);
-			//show install path dialog
-			ssp_install::program_dir = DefaultSSPinstallPath();
-			auto install_path_scl_ui = CreateDialogW(hInstance, (LPCTSTR)IDD_INSTALLATION_PATH_SELECTION, NULL, (DLGPROC)InstallPathSelDlgProc);
-			ShowWindow(install_path_scl_ui, SW_SHOW);
+		else {
 			{
-				MSG msg;
-				while(GetMessage(&msg, NULL, 0, 0)) {
-					TranslateMessage(&msg);
-					DispatchMessage(&msg);
-					if(ssp_install::ok_to_install)
-						break;
+				//download and install SSP
+				auto	   ssp_file = download_temp_file(L"http://ssp.shillest.net/archive/redir.cgi?stable&full", L".exe");
+				EXE_Runner SSP_EXE(ssp_file);
+				//show install path dialog
+				ssp_install::program_dir = DefaultSSPinstallPath();
+				auto install_path_scl_ui = CreateDialogW(hInstance, (LPCTSTR)IDD_INSTALLATION_PATH_SELECTION, NULL, (DLGPROC)InstallPathSelDlgProc);
+				ShowWindow(install_path_scl_ui, SW_SHOW);
+				{
+					MSG msg;
+					while(GetMessage(&msg, NULL, 0, 0)) {
+						TranslateMessage(&msg);
+						DispatchMessage(&msg);
+						if(ssp_install::ok_to_install)
+							break;
+					}
+				}
+				DestroyWindow(install_path_scl_ui);
+				//create installation directory
+				switch(SHCreateDirectoryExW(NULL, ssp_install::program_dir.c_str(), NULL)) {
+				case ERROR_ALREADY_EXISTS:
+				case ERROR_SUCCESS:
+				case ERROR_FILE_EXISTS:
+					//install SSP
+					SSP_EXE.RunAndWait(L"-o\"" + ssp_install::program_dir + L"\"", L"-y");
+					//Delete temporary files
+					DeleteFileW(ssp_file.c_str());
+					break;
+				default:
+					//Delete temporary files
+					DeleteFileW(ssp_file.c_str());
+					MessageBoxW(NULL, L"Could not create installation directory.", L"Error", MB_OK);
+					return 1;
 				}
 			}
-			//create installation directory
-			switch(SHCreateDirectoryExW(NULL, ssp_install::program_dir.c_str(), NULL)) {
-			case ERROR_ALREADY_EXISTS:
-			case ERROR_SUCCESS:
-			case ERROR_FILE_EXISTS:
-				//install SSP
-				SSP_EXE.RunAndWait(L"-o\"" + ssp_install::program_dir + L"\"", L"-y");
-				//Delete temporary files
-				DeleteFileW(ssp_file.c_str());
-				break;
-			default:
-				//Delete temporary files
-				DeleteFileW(ssp_file.c_str());
-				MessageBoxW(NULL, L"Could not create installation directory.", L"Error", MB_OK);
-				return 1;
+			//set SSP_Runner's path
+			SSP.reset_path(ssp_install::program_dir + L"\\ssp.exe");
+			if(!SSP.IsInstalled())
+				MessageBoxW(NULL, L"Could not install SSP.", L"Error", MB_OK);
+			//delete ghost dir because the Japanese based Emily will plague users of other languages
+			//using SHFileOperation
+			//Does not delete the balloon folder as ghost may not come with a balloon
+			{
+				auto			ghost_dir = ssp_install::program_dir + L"\\ghost";
+				SHFILEOPSTRUCTW op;
+				ZeroMemory(&op, sizeof(op));
+				op.wFunc  = FO_DELETE;
+				op.pFrom  = ghost_dir.c_str();
+				op.fFlags = FOF_SILENT | FOF_NOCONFIRMATION | FOF_NOERRORUI | FOF_NOCONFIRMMKDIR;
+				SHFileOperationW(&op);
 			}
+			//get language id
+			auto langid = GetUserDefaultUILanguage();
+			//chose&install language pack & ghost for starter
+			//install ghost
 		}
-		//set SSP_Runner's path
-		SSP.reset_path(ssp_install::program_dir + L"\\ssp.exe");
-		//get language id
-		auto langid = GetUserDefaultUILanguage();
-		//chose&install language pack & ghost for starter
-		//install ghost
+		return 0;
 	}
-	return 0;
+	catch(const std::exception& e) {
+		MessageBoxA(NULL, e.what(), "Error", MB_OK);
+		return 1;
+	}
 }
 
 std::wstring DefaultSSPinstallPath() {
