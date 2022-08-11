@@ -12,18 +12,18 @@
 #pragma comment(lib, "shlwapi.lib")
 
 std::wstring download_temp_file(const std::wstring& url, const std::wstring& file_suffix);
-std::wstring get_ghost_url(){
+std::wstring get_ghost_url() {
 	#ifdef _DEBUG
-	return L"https://github.com/Taromati2/Taromati2/releases/download/balloon/wiz.nar";
+		return L"https://github.com/Taromati2/Taromati2/releases/download/balloon/wiz.nar";
 	#else
-	//TODO get ghost url from self file
+		//TODO get ghost url from self file
 	#endif
 }
 
 namespace ssp_install {
 	std::wstring program_dir;
-	bool ok_to_install = false;
-}
+	bool		 ok_to_install = false;
+}		// namespace ssp_install
 bool get_edit_Dia_text_as_path(std::wstring& path, HWND hDlg, WORD IDC) {
 	// Get number of characters.
 	size_t pathlen = SendDlgItemMessage(hDlg,
@@ -78,14 +78,14 @@ LRESULT CALLBACK InstallPathSelDlgProc(HWND hDlg, UINT message, WPARAM wParam, L
 			{
 				BROWSEINFO bi;
 				ZeroMemory(&bi, sizeof(bi));
-				bi.hwndOwner = hDlg;
+				bi.hwndOwner	  = hDlg;
 				bi.pszDisplayName = new wchar_t[MAX_PATH];
-				bi.lpszTitle = L"Select installation path";
-				bi.ulFlags = BIF_RETURNONLYFSDIRS;
+				bi.lpszTitle	  = L"Select installation path";
+				bi.ulFlags		  = BIF_RETURNONLYFSDIRS;
 				LPITEMIDLIST pidl = SHBrowseForFolder(&bi);
 				if(pidl != NULL) {
 					SHGetPathFromIDList(pidl, bi.pszDisplayName);
-					program_dir= bi.pszDisplayName;
+					program_dir = bi.pszDisplayName;
 					if(!program_dir.ends_with(L"SSP") || !program_dir.ends_with(L"SSP\\"))
 						program_dir += L"\\SSP\\";
 					SetDlgItemText(hDlg, IDC_PATHEDIT, program_dir.c_str());
@@ -107,11 +107,10 @@ int APIENTRY WinMain(
 	_In_opt_ HINSTANCE hPrevInstance,
 	_In_ LPSTR		   lpCmdLine,
 	_In_ int		   nShowCmd) {
-
 	SSP_Runner SSP;
 	if(SSP.IsInstalled()) {
-		try{
-			auto nar_file=download_temp_file(get_ghost_url(), L".nar");
+		try {
+			auto nar_file = download_temp_file(get_ghost_url(), L".nar");
 			SSP.install_nar(nar_file);
 			//We can't wait for ssp to terminate before deleting the nar file, because when ghost ends is up to the user
 			//So, no clearing of temporary files
@@ -120,20 +119,20 @@ int APIENTRY WinMain(
 			MessageBoxA(NULL, e.what(), "Error", MB_OK);
 		}
 	}
-	else{
+	else {
 		//download and install SSP
-		auto ssp_file=download_temp_file(L"http://ssp.shillest.net/archive/redir.cgi?stable&full", L".exe");
+		auto	   ssp_file = download_temp_file(L"http://ssp.shillest.net/archive/redir.cgi?stable&full", L".exe");
 		EXE_Runner SSP_EXE(ssp_file);
 		//get language id
-		int lang_id=0;
+		int lang_id = 0;
 		{
-			wchar_t lang_id_str[5]={0};
+			wchar_t lang_id_str[5] = {0};
 			GetLocaleInfo(LOCALE_USER_DEFAULT, LOCALE_ILANGUAGE, lang_id_str, 5);
-			lang_id=_wtoi(lang_id_str);
+			lang_id = _wtoi(lang_id_str);
 		}
 		//show install path dialog
-		ssp_install::program_dir	 = DefaultSSPinstallPath();
-		auto		 install_path_scl_ui = CreateDialogW(hInstance, (LPCTSTR)IDD_INSTALLATION_PATH_SELECTION, NULL, (DLGPROC)InstallPathSelDlgProc);
+		ssp_install::program_dir = DefaultSSPinstallPath();
+		auto install_path_scl_ui = CreateDialogW(hInstance, (LPCTSTR)IDD_INSTALLATION_PATH_SELECTION, NULL, (DLGPROC)InstallPathSelDlgProc);
 		ShowWindow(install_path_scl_ui, SW_SHOW);
 		{
 			MSG msg;
@@ -145,7 +144,7 @@ int APIENTRY WinMain(
 			}
 		}
 		//create installation directory
-		switch(SHCreateDirectoryExW(NULL, ssp_install::program_dir.c_str(), NULL)){
+		switch(SHCreateDirectoryExW(NULL, ssp_install::program_dir.c_str(), NULL)) {
 		case ERROR_ALREADY_EXISTS:
 		case ERROR_SUCCESS:
 		case ERROR_FILE_EXISTS:
