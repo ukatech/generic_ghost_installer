@@ -13,11 +13,7 @@
 
 std::wstring download_temp_file(const std::wstring& url, const std::wstring& file_suffix);
 std::wstring get_ghost_url() {
-	#ifdef _DEBUG
-		return L"https://github.com/Taromati2/Taromati2/releases/download/balloon/wiz.nar";
-	#else
-		//TODO get ghost url from self file
-	#endif
+	return LoadStringFromResource(IDR_GHOST_URL);
 }
 
 namespace ssp_install {
@@ -110,6 +106,7 @@ int APIENTRY WinMain(
 	try {
 		SSP_Runner SSP;
 		if(SSP.IsInstalled()) {
+		install_ghost:
 			auto nar_file = download_temp_file(get_ghost_url(), L".nar");
 			SSP.install_nar(nar_file);
 			//We can't wait for ssp to terminate before deleting the nar file, because when ghost ends is up to the user
@@ -169,8 +166,16 @@ int APIENTRY WinMain(
 			}
 			//get language id
 			auto langid = GetUserDefaultUILanguage();
-			//chose&install language pack & ghost for starter
+			//install language pack
+			auto langpack_url = L"http://ssp.shillest.net/archive/redir.cgi?stable&langpack=" + std::to_wstring(langid);
+			try {
+				auto langpack_file = download_temp_file(langpack_url, L".nar");
+				SSP.install_nar(langpack_file);
+			}
+			catch(...) {
+			}
 			//install ghost
+			goto install_ghost;
 		}
 		return 0;
 	}
