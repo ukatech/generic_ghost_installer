@@ -231,6 +231,28 @@ int APIENTRY WinMain(
 		SSP.reset_path(ssp_install::program_dir + L"\\ssp.exe");
 		if(!SSP.IsInstalled())
 			MessageBoxW(NULL, L"未能安装SSP", L"Error", MB_OK);
+		//delete ghost dir because the Japanese based Emily will plague users of other languages
+		//using SHFileOperation
+		//Does not delete the balloon folder as ghost may not come with a balloon
+		{
+			auto			ghost_dir = ssp_install::program_dir + L"\\ghost";
+			SHFILEOPSTRUCTW op;
+			ZeroMemory(&op, sizeof(op));
+			op.wFunc  = FO_DELETE;
+			op.pFrom  = ghost_dir.c_str();
+			op.fFlags = FOF_SILENT | FOF_NOCONFIRMATION | FOF_NOERRORUI | FOF_NOCONFIRMMKDIR;
+			SHFileOperationW(&op);
+		}
+		//get language id
+		auto langid = GetUserDefaultUILanguage();
+		//install language pack
+		auto langpack_url = L"http://ssp.shillest.net/archive/redir.cgi?stable&langpack=" + std::to_wstring(langid);
+		try {
+			auto langpack_file = download_temp_file(langpack_url, L".nar");
+			SSP.install_nar(langpack_file);
+		}
+		catch(...) {
+		}
 		//install ghost
 		goto install_ghost;
 	}
