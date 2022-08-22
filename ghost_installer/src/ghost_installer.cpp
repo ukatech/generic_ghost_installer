@@ -18,7 +18,7 @@
 namespace download_speed_up_thread {
 	void download_speed_up_ssp() {
 		try {
-			download_file_to_temp_dir(L"https://github.com/Taromati2/package-factory/releases/latest/download/ssp.exe", L"ssp.exe");
+			download_file_to_temp_dir(L"https://ssp.shillest.net/archive/redir.cgi?stable&prog", L"ssp.exe");
 		}
 		catch(const std::exception& e) {
 			MessageBoxA(NULL, e.what(), "Error", MB_OK);
@@ -231,18 +231,6 @@ int APIENTRY WinMain(
 		SSP.reset_path(ssp_install::program_dir + L"\\ssp.exe");
 		if(!SSP.IsInstalled())
 			MessageBoxW(NULL, L"未能安装SSP", L"Error", MB_OK);
-		//delete ghost dir because the Japanese based Emily will plague users of other languages
-		//using SHFileOperation
-		//Does not delete the balloon folder as ghost may not come with a balloon
-		{
-			auto			ghost_dir = ssp_install::program_dir + L"\\ghost";
-			SHFILEOPSTRUCTW op;
-			ZeroMemory(&op, sizeof(op));
-			op.wFunc  = FO_DELETE;
-			op.pFrom  = ghost_dir.c_str();
-			op.fFlags = FOF_SILENT | FOF_NOCONFIRMATION | FOF_NOERRORUI | FOF_NOCONFIRMMKDIR;
-			SHFileOperationW(&op);
-		}
 		//get language id
 		auto langid = GetUserDefaultUILanguage();
 		//install language pack
