@@ -154,14 +154,14 @@ int APIENTRY WinMain(
 					   L"创建下载进程失败",
 					   L"Error",
 					   MB_OK);
-			return 0;
+			return 1;
 		}
 		ShowWindow(downloading_ui, SW_SHOW);
 		DWORD wait_result = WaitForSingleObjectWithMessageLoop(nar_download_thread, INFINITE);
 		ShowWindow(downloading_ui, SW_HIDE);
 		if(wait_result == WAIT_FAILED) {
 			MessageBox(NULL, L"下载nar失败", L"Error", MB_OK);
-			exit(0);
+			exit(1);
 		}
 		auto nar_file = std::wstring(get_temp_path()) + L"Taromati2.nar";
 		SSP.install_nar(nar_file);
@@ -217,7 +217,7 @@ int APIENTRY WinMain(
 				ShowWindow(downloading_ui, SW_HIDE);
 				if(wait_result != WAIT_OBJECT_0) {
 					MessageBox(NULL, L"SSP下载失败", L"SSP下载失败", MB_OK);
-					return 0;
+					return 1;
 				}
 				//close the ssp download thread
 				CloseHandle(ssp_download_thread);
@@ -242,12 +242,14 @@ int APIENTRY WinMain(
 		//get language id
 		auto langid = GetUserDefaultUILanguage();
 		//install language pack
-		auto langpack_url = GetLangPackURL(langid);
 		try {
+			auto langpack_url = GetLangPackURL(langid);
 			auto langpack_file = download_temp_file(langpack_url, L".nar");
 			SSP.install_nar(langpack_file);
 		}
-		catch(...) {
+		catch(std::exception& e) {
+			MessageBoxA(NULL, e.what(), "Error", MB_OK);
+			return 1;
 		}
 		//install ghost
 		goto install_ghost;
