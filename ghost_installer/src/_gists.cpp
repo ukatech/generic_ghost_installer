@@ -3,6 +3,7 @@
 #include "my-gists/windows/WaitForXObjectWithMessageLoop.cpp"
 #include "my-gists/windows/download_file.cpp"
 #include "my-gists/windows/IsNetworkHasCost.cpp"
+#include "my-gists/STL/yaml_reader.cpp"
 
 const wchar_t* NetAgentName() {
 	return L"ghost_installer";

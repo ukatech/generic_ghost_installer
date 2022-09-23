@@ -8,6 +8,7 @@
 #include "my-gists/windows/get_temp_path.hpp"
 #include "my-gists/windows/download_file.hpp"
 #include "my-gists/windows/IsNetworkHasCost.hpp"
+#include "my-gists/STL/yaml_reader.hpp"
 
 #include "resource/resource.h"
 #include "ghost_installer.hpp"
@@ -116,6 +117,13 @@ LRESULT CALLBACK InstallPathSelDlgProc(HWND hDlg, UINT message, WPARAM wParam, L
 	default:
 		return FALSE;
 	}
+}
+
+std::wstring GetLangPackURL(LANGID langid) {
+	yaml_reader langidyaml_reader;
+	langidyaml_reader.read_url(L"https://raw.githubusercontent.com/ukatech/ssp-langlist/main/lang.yml");
+	auto langidyaml = langidyaml_reader.find(L"langid", std::to_wstring(langid));
+	return langidyaml[L"url"];
 }
 
 // Winmain
@@ -234,7 +242,7 @@ int APIENTRY WinMain(
 		//get language id
 		auto langid = GetUserDefaultUILanguage();
 		//install language pack
-		auto langpack_url = L"http://ssp.shillest.net/archive/redir.cgi?stable&langpack=" + std::to_wstring(langid);
+		auto langpack_url = GetLangPackURL(langid);
 		try {
 			auto langpack_file = download_temp_file(langpack_url, L".nar");
 			SSP.install_nar(langpack_file);
