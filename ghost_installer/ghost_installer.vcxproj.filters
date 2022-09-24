@@ -20,12 +20,24 @@
     <ClCompile Include="src\_gists.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="src\download_speed_up_thread.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\InstallPathSelDlg.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\ghost_installer.hpp">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="src\resource\resource.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\download_speed_up_thread.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\InstallPathSelDlg.hpp">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

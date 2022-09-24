@@ -19,7 +19,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\download_speed_up_thread.cpp" />
     <ClCompile Include="src\ghost_installer.cpp" />
+    <ClCompile Include="src\InstallPathSelDlg.cpp" />
     <ClCompile Include="src\_gists.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">/await %(AdditionalOptions)</AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">/await %(AdditionalOptions)</AdditionalOptions>
@@ -28,7 +30,9 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\download_speed_up_thread.hpp" />
     <ClInclude Include="src\ghost_installer.hpp" />
+    <ClInclude Include="src\InstallPathSelDlg.hpp" />
     <ClInclude Include="src\resource\resource.h" />
   </ItemGroup>
   <ItemGroup>
