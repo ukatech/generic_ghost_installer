@@ -68,7 +68,7 @@ int APIENTRY WinMain(
 			return 0;
 		}
 		auto response = MessageBox(NULL,
-								   L"SSP未安装，点击确认以安装SSP并继续\n若已安装SSP，请更新到最新版后右键人格->设置->选项->常规->关联相关文件扩展名，并重启此程序",
+								   L"SSP未安装，此程序是运行ghost的基础平台\n点击确认以安装SSP并继续\n若已安装SSP，请关掉SSP并在接下来的安装路径选择中选择现有的SSP路径以更新SSP至最新版本",
 								   L"SSP未安装",
 								   MB_YESNO);
 		if(response != IDYES)
