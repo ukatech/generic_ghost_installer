@@ -21,7 +21,6 @@ int APIENTRY WinMain(
 	_In_opt_ HINSTANCE hPrevInstance,
 	_In_ LPSTR		   lpCmdLine,
 	_In_ int		   nShowCmd) {
-	//*
 	if(IsNetworkHasCost()) {
 		auto result = MessageBox(NULL,
 								 L"您的网络可能是计费网络，是否继续安装？",
@@ -30,13 +29,27 @@ int APIENTRY WinMain(
 		if(result == IDNO)
 			return 0;
 	}
-	//*/
 
 	SSP_Runner SSP;
 	HANDLE	   nar_download_thread = NULL;
 	auto	   downloading_ui	   = CreateDialogW(hInstance, (LPCTSTR)IDD_DOWNLOADING, NULL, NULL);
-	if(SSP.IsInstalled()) {
+	//lambda for start downloading thread
+	auto start_nar_download_thread = [&]() {
 		nar_download_thread = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)download_speed_up_thread::download_speed_up_nar, NULL, 0, NULL);
+	};
+	//lambda for show downloading ui and wait for downloading thread
+	auto wait_for = [&](HANDLE some_download_thread) {
+		ShowWindow(downloading_ui, SW_SHOW);
+		DWORD wait_result = WaitForSingleObjectWithMessageLoop(some_download_thread, INFINITE);
+		ShowWindow(downloading_ui, SW_HIDE);
+		if(wait_result == WAIT_FAILED) {
+			MessageBox(NULL, L"下载必须的文件失败", L"Error", MB_OK);
+			exit(1);
+		}
+	};
+	
+	if(SSP.IsInstalled()) {
+		start_nar_download_thread();
 	install_ghost:
 		if(!nar_download_thread) {
 			MessageBox(NULL,
@@ -45,21 +58,21 @@ int APIENTRY WinMain(
 					   MB_OK);
 			return 1;
 		}
-		ShowWindow(downloading_ui, SW_SHOW);
-		DWORD wait_result = WaitForSingleObjectWithMessageLoop(nar_download_thread, INFINITE);
-		ShowWindow(downloading_ui, SW_HIDE);
-		if(wait_result == WAIT_FAILED) {
-			MessageBox(NULL, L"下载nar失败", L"Error", MB_OK);
-			exit(1);
-		}
+		wait_for(nar_download_thread);
 		auto nar_file = std::wstring(get_temp_path()) + L"Taromati2.nar";
-		SSP.install_nar_and_delete_source_if_succes(nar_file);
-		//We can't wait for ssp to terminate before deleting the nar file, because when ghost ends is up to the user
-		//So, no clearing of temporary files
+		#ifndef _DEBUG
+			SSP.install_nar_and_delete_source_if_succes(nar_file);
+		#else
+			SSP.install_nar(nar_file);
+		#endif
 	}
 	else {
 		auto ssp_download_thread = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)download_speed_up_thread::download_speed_up_ssp, NULL, 0, NULL);
 		HANDLE lang_pack_download_thread = NULL;
+		//lambda for start downloading thread
+		auto start_lang_pack_download_thread = [&]() {
+			lang_pack_download_thread = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)download_speed_up_thread::download_speed_up_langpack, NULL, 0, NULL);
+		};
 		if(!ssp_download_thread) {
 			MessageBox(NULL,
 					   L"创建下载进程失败",
@@ -75,10 +88,10 @@ int APIENTRY WinMain(
 			return 0;
 		{
 			//wait for ssp to download
-			DWORD wait_result = WaitForSingleObjectWithMessageLoop(ssp_download_thread, 0);
+			DWORD wait_result = WaitForSingleObject(ssp_download_thread, 0);
 			if(wait_result == WAIT_OBJECT_0) {
 				//start lang pack download
-				lang_pack_download_thread = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)download_speed_up_thread::download_speed_up_langpack, NULL, 0, NULL);
+				start_lang_pack_download_thread();
 			}
 			auto	   ssp_file = std::wstring(get_temp_path()) + L"SSP.exe";
 			EXE_Runner SSP_EXE(ssp_file);
@@ -102,22 +115,16 @@ int APIENTRY WinMain(
 			case ERROR_SUCCESS:
 			case ERROR_FILE_EXISTS: {
 				//wait for ssp to download
-				ShowWindow(downloading_ui, SW_SHOW);
-				DWORD wait_result = WaitForSingleObjectWithMessageLoop(ssp_download_thread, INFINITE);
-				ShowWindow(downloading_ui, SW_HIDE);
-				if(wait_result != WAIT_OBJECT_0) {
-					MessageBox(NULL, L"SSP下载失败", L"SSP下载失败", MB_OK);
-					return 1;
-				}
+				wait_for(ssp_download_thread);
 				//close the ssp download thread
 				CloseHandle(ssp_download_thread);
 				//start nar download
 				if(!lang_pack_download_thread)
-					lang_pack_download_thread = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)download_speed_up_thread::download_speed_up_langpack, NULL, 0, NULL);
+					start_lang_pack_download_thread();
 				else {
-					wait_result = WaitForSingleObjectWithMessageLoop(lang_pack_download_thread, 0);
+					wait_result = WaitForSingleObject(lang_pack_download_thread, 0);
 					if(wait_result == WAIT_OBJECT_0)
-						nar_download_thread = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)download_speed_up_thread::download_speed_up_nar, NULL, 0, NULL);
+						start_nar_download_thread();
 				}
 				//install SSP
 				SSP_EXE.RunAndWait(L"-o\"" + ssp_install::program_dir + L"\"", L"-y");
@@ -139,21 +146,22 @@ int APIENTRY WinMain(
 			#endif
 		}
 		//wait 
-		ShowWindow(downloading_ui, SW_SHOW);
-		DWORD wait_result = WaitForSingleObjectWithMessageLoop(lang_pack_download_thread, INFINITE);
-		ShowWindow(downloading_ui, SW_HIDE);
-		if(wait_result == WAIT_OBJECT_0)
-			nar_download_thread = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)download_speed_up_thread::download_speed_up_nar, NULL, 0, NULL);
-		else {
-			MessageBoxW(NULL, L"语言包下载失败", L"Error", MB_OK);
-			return 1;
-		}
+		wait_for(lang_pack_download_thread);
+		CloseHandle(lang_pack_download_thread);
+		start_nar_download_thread();
 		//install language pack
 		auto langpackfile = std::wstring(get_temp_path()) + L"langpack.nar";
 		if(_waccess(langpackfile.c_str(), 0) == 0)
-			SSP.install_nar_and_delete_source_if_succes(langpackfile);
+			#ifndef _DEBUG
+				SSP.install_nar_and_delete_source_if_succes(langpackfile);
+			#else
+				SSP.install_nar(langpackfile);
+			#endif
 		//install ghost
 		goto install_ghost;
 	}
+	//close things
+	DestroyWindow(downloading_ui);
+	CloseHandle(nar_download_thread);
 	return 0;
 }
