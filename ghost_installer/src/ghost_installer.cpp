@@ -133,8 +133,10 @@ int APIENTRY WinMain(
 				MessageBoxW(NULL, L"未能安装SSP", L"Error", MB_OK);
 				return 1;
 			}
+			#ifndef _DEBUG
 			//Delete temporary files
 			DeleteFileW(ssp_file.c_str());
+			#endif
 		}
 		//wait 
 		ShowWindow(downloading_ui, SW_SHOW);
