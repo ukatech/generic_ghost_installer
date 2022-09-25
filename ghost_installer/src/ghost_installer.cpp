@@ -8,20 +8,12 @@
 #include "my-gists/windows/get_temp_path.hpp"
 #include "my-gists/windows/download_file.hpp"
 #include "my-gists/windows/IsNetworkHasCost.hpp"
-#include "my-gists/STL/yaml_reader.hpp"
 
 #include "resource/resource.h"
 
 #include "download_speed_up_thread.hpp"
 #include "InstallPathSelDlg.hpp"
 #include "ghost_installer.hpp"
-
-std::wstring GetLangPackURL(LANGID langid) {
-	yaml_reader langidyaml_reader;
-	langidyaml_reader.read_url(L"https://raw.githubusercontent.com/ukatech/ssp-langlist/main/lang.yml");
-	auto langidyaml = langidyaml_reader.find(L"langid", std::to_wstring(langid));
-	return langidyaml[L"url"];
-}
 
 // Winmain
 int APIENTRY WinMain(
@@ -67,6 +59,7 @@ int APIENTRY WinMain(
 	}
 	else {
 		auto ssp_download_thread = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)download_speed_up_thread::download_speed_up_ssp, NULL, 0, NULL);
+		HANDLE lang_pack_download_thread = NULL;
 		if(!ssp_download_thread) {
 			MessageBox(NULL,
 					   L"创建下载进程失败",
@@ -84,8 +77,8 @@ int APIENTRY WinMain(
 			//wait for ssp to download
 			DWORD wait_result = WaitForSingleObjectWithMessageLoop(ssp_download_thread, 0);
 			if(wait_result == WAIT_OBJECT_0) {
-				//start nar download
-				nar_download_thread = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)download_speed_up_thread::download_speed_up_nar, NULL, 0, NULL);
+				//start lang pack download
+				lang_pack_download_thread = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)download_speed_up_thread::download_speed_up_langpack, NULL, 0, NULL);
 			}
 			auto	   ssp_file = std::wstring(get_temp_path()) + L"SSP.exe";
 			EXE_Runner SSP_EXE(ssp_file);
@@ -119,35 +112,44 @@ int APIENTRY WinMain(
 				//close the ssp download thread
 				CloseHandle(ssp_download_thread);
 				//start nar download
-				if(!nar_download_thread)
-					nar_download_thread = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)download_speed_up_thread::download_speed_up_nar, NULL, 0, NULL);
+				if(!lang_pack_download_thread)
+					lang_pack_download_thread = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)download_speed_up_thread::download_speed_up_langpack, NULL, 0, NULL);
+				else {
+					wait_result = WaitForSingleObjectWithMessageLoop(lang_pack_download_thread, 0);
+					if(wait_result == WAIT_OBJECT_0)
+						nar_download_thread = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)download_speed_up_thread::download_speed_up_nar, NULL, 0, NULL);
+				}
 				//install SSP
 				SSP_EXE.RunAndWait(L"-o\"" + ssp_install::program_dir + L"\"", L"-y");
-				//Delete temporary files
-				DeleteFileW(ssp_file.c_str());
 				break;
 			}
 			default:
 				MessageBoxW(NULL, L"未能创建安装文件夹\n请考虑以管理员运行此程序或检查安装路径", L"Error", MB_OK);
 				return 1;
 			}
+			//set SSP_Runner's path
+			SSP.reset_path(ssp_install::program_dir + L"\\ssp.exe");
+			if(!SSP.IsInstalled()) {
+				MessageBoxW(NULL, L"未能安装SSP", L"Error", MB_OK);
+				return 1;
+			}
+			//Delete temporary files
+			DeleteFileW(ssp_file.c_str());
 		}
-		//set SSP_Runner's path
-		SSP.reset_path(ssp_install::program_dir + L"\\ssp.exe");
-		if(!SSP.IsInstalled())
-			MessageBoxW(NULL, L"未能安装SSP", L"Error", MB_OK);
-		//get language id
-		auto langid = GetUserDefaultUILanguage();
-		//install language pack
-		try {
-			auto langpack_url = GetLangPackURL(langid);
-			auto langpack_file = download_temp_file(langpack_url, L".nar");
-			SSP.install_nar(langpack_file);
-		}
-		catch(std::exception& e) {
-			MessageBoxA(NULL, e.what(), "Error", MB_OK);
+		//wait 
+		ShowWindow(downloading_ui, SW_SHOW);
+		DWORD wait_result = WaitForSingleObjectWithMessageLoop(lang_pack_download_thread, INFINITE);
+		ShowWindow(downloading_ui, SW_HIDE);
+		if(wait_result == WAIT_OBJECT_0)
+			nar_download_thread = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)download_speed_up_thread::download_speed_up_nar, NULL, 0, NULL);
+		else {
+			MessageBoxW(NULL, L"语言包下载失败", L"Error", MB_OK);
 			return 1;
 		}
+		//install language pack
+		auto langpackfile = std::wstring(get_temp_path()) + L"langpack.nar";
+		if(_waccess(langpackfile.c_str(), 0) == 0)
+			SSP.install_nar(langpackfile);
 		//install ghost
 		goto install_ghost;
 	}
