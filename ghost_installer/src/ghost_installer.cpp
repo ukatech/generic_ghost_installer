@@ -53,7 +53,7 @@ int APIENTRY WinMain(
 			exit(1);
 		}
 		auto nar_file = std::wstring(get_temp_path()) + L"Taromati2.nar";
-		SSP.install_nar(nar_file);
+		SSP.install_nar_and_delete_source_if_succes(nar_file);
 		//We can't wait for ssp to terminate before deleting the nar file, because when ghost ends is up to the user
 		//So, no clearing of temporary files
 	}
@@ -151,7 +151,7 @@ int APIENTRY WinMain(
 		//install language pack
 		auto langpackfile = std::wstring(get_temp_path()) + L"langpack.nar";
 		if(_waccess(langpackfile.c_str(), 0) == 0)
-			SSP.install_nar(langpackfile);
+			SSP.install_nar_and_delete_source_if_succes(langpackfile);
 		//install ghost
 		goto install_ghost;
 	}
