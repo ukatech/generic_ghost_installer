@@ -50,30 +50,6 @@ END
 
 /////////////////////////////////////////////////////////////////////////////
 //
-// Dialog
-//
-
-IDD_INSTALLATION_PATH_SELECTION DIALOGEX 0, 0, 308, 58
-STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "选择安装路径"
-FONT 8, "MS Shell Dlg", 400, 0, 0x1
-BEGIN
-    DEFPUSHBUTTON   "确定",IDOK,169,39,50,14
-    PUSHBUTTON      "取消",IDCANCEL,251,39,50,14
-    PUSHBUTTON      "浏览",IDSELECT,265,18,36,12
-    EDITTEXT        IDC_PATHEDIT,16,18,244,12,ES_AUTOHSCROLL
-END
-
-IDD_DOWNLOADING DIALOGEX 0, 0, 158, 52
-STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP
-FONT 8, "MS Shell Dlg", 400, 0, 0x1
-BEGIN
-    LTEXT           "所需文件下载中",IDC_STATIC,47,22,63,8
-END
-
-
-/////////////////////////////////////////////////////////////////////////////
-//
 // DESIGNINFO
 //
 
@@ -114,7 +90,6 @@ BEGIN
     0
 END
 
-
 /////////////////////////////////////////////////////////////////////////////
 //
 // String Table
@@ -125,6 +100,54 @@ BEGIN
     IDS_NAR_URL           "https://github.com/Taromati2/package-factory/releases/latest/download/Taromati2.nar"
     IDS_NAR_FILE_NAME     "Taromati2.nar"
 END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDI_ICON                ICON                    "kikka.ico"
+
+#endif    // 非特定语言 resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+/////////////////////////////////////////////////////////////////////////////
+// 中文(简体) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_CHS)
+LANGUAGE LANG_CHINESE, SUBLANG_NEUTRAL
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_INSTALLATION_PATH_SELECTION DIALOGEX 0, 0, 308, 58
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "选择安装路径"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "确定",IDOK,169,39,50,14
+    PUSHBUTTON      "取消",IDCANCEL,251,39,50,14
+    PUSHBUTTON      "浏览",IDSELECT,265,18,36,12
+    EDITTEXT        IDC_PATHEDIT,16,18,244,12,ES_AUTOHSCROLL
+END
+
+IDD_DOWNLOADING DIALOGEX 0, 0, 158, 52
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    LTEXT           "所需文件下载中",IDC_STATIC,47,22,63,8
+END
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
 
 STRINGTABLE
 BEGIN
@@ -142,15 +165,113 @@ BEGIN
 	IDS_SELECT_THE_SSP_INSTALLATION_PATH "选择SSP安装路径"
 END
 
+#endif    // 中文(简体) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+/////////////////////////////////////////////////////////////////////////////
+// 日语(中性) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_JPN)
+LANGUAGE LANG_JAPANESE, SUBLANG_NEUTRAL
+
 /////////////////////////////////////////////////////////////////////////////
 //
-// Icon
+// Dialog
 //
 
-// Icon with lowest ID value placed first to ensure application icon
-// remains consistent on all systems.
-IDI_ICON                ICON                    "kikka.ico"
+IDD_INSTALLATION_PATH_SELECTION DIALOGEX 0, 0, 308, 58
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "インストールパスの選択"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "決定",IDOK,169,39,50,14
+    PUSHBUTTON      "キャンセルについて",IDCANCEL,251,39,50,14
+    PUSHBUTTON      "ブラウズ",IDSELECT,265,18,36,12
+    EDITTEXT        IDC_PATHEDIT,16,18,244,12,ES_AUTOHSCROLL
+END
 
-#endif    // 非特定语言 resources
+IDD_DOWNLOADING DIALOGEX 0, 0, 158, 52
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    LTEXT           "必要な書類をダウンロード中",IDC_STATIC,47,22,63,8
+END
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE
+BEGIN
+    IDS_ERROR_TITLE           					"エラー"
+    IDS_WARNING_TITLE         					"警告"
+	IDS_NOTICE_TITLE							"備考"
+	IDS_NETWORK_HAS_COST			"あなたのネットワークは課金ネットワークかもしれませんが、インストールを続けますか？"
+	IDS_FAILED_TO_CREATE_DL_PROCESS	"ダウンロードプロセスの作成に失敗しました"
+	IDS_FAILED_TO_DOWNLOAD_REQUIRED_FILE "必要なファイルのダウンロードに失敗しました"
+	IDS_SSP_NOT_INSTALLED_TITLE		"SSP未搭載"
+	IDS_SSP_NOT_INSTALLED_INFO		"SSPがインストールされていない場合、このプログラムはゴーストを実行するための基本プラットフォームとなります\nSSPをインストールするためにConfirmをクリックし、次に進みます。\nSSPが既にインストールされている場合は、SSPをオフにして、次のインストールパスの選択で既存のSSPのパスを選択して、SSPを最新バージョンに更新してください"
+	IDS_FAILED_TO_CREATE_INSTALLATION_FOLDER "インストールフォルダが作成されない\n管理者としてプログラムを実行するか、インストールパスを確認することを検討してください。"
+	IDS_FAILED_TO_INSTALL_SSP		"SSPのインストールに失敗"
+	IDS_PLEASE_ENTER_THE_PATH		"パスを入力してください"
+	IDS_SELECT_THE_SSP_INSTALLATION_PATH "SSPのインストールパスを選択する"
+END
+
+#endif    // 日语(中性) resources
+/////////////////////////////////////////////////////////////////////////////
+
+/////////////////////////////////////////////////////////////////////////////
+// 英语(中性) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+LANGUAGE LANG_ENGLISH, SUBLANG_NEUTRAL
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_INSTALLATION_PATH_SELECTION DIALOGEX 0, 0, 308, 58
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Select installation path"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "Determine",IDOK,169,39,50,14
+    PUSHBUTTON      "Cancellation",IDCANCEL,251,39,50,14
+    PUSHBUTTON      "Browse",IDSELECT,265,18,36,12
+    EDITTEXT        IDC_PATHEDIT,16,18,244,12,ES_AUTOHSCROLL
+END
+
+IDD_DOWNLOADING DIALOGEX 0, 0, 158, 52
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    LTEXT           "Required documents are being downloaded",IDC_STATIC,47,22,63,8
+END
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE
+BEGIN
+    IDS_ERROR_TITLE           					"Error"
+    IDS_WARNING_TITLE         					"Warning"
+	IDS_NOTICE_TITLE							"Note"
+	IDS_NETWORK_HAS_COST			"Your network may be a billing network, do you continue with the installation?"
+	IDS_FAILED_TO_CREATE_DL_PROCESS	"Failed to create download process"
+	IDS_FAILED_TO_DOWNLOAD_REQUIRED_FILE "Failed to download the required file"
+	IDS_SSP_NOT_INSTALLED_TITLE		"SSP not installed"
+	IDS_SSP_NOT_INSTALLED_INFO		"SSP is not installed, this program is the base platform for running ghost\nClick Confirm to install SSP and continue\nIf SSP is already installed, please turn off SSP and select the existing SSP path in the next installation path selection to update SSP to the latest version"
+	IDS_FAILED_TO_CREATE_INSTALLATION_FOLDER "The installation folder could not be created \n please consider running the program as administrator or checking the installation path"
+	IDS_FAILED_TO_INSTALL_SSP		"Failure to install SSP"
+	IDS_PLEASE_ENTER_THE_PATH		"Please enter the path"
+	IDS_SELECT_THE_SSP_INSTALLATION_PATH "Select the SSP installation path"
+END
+
+#endif    // 英语(中性) resources
 /////////////////////////////////////////////////////////////////////////////
 
