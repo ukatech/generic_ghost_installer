@@ -126,6 +126,22 @@ BEGIN
     IDS_NAR_FILE_NAME     "Taromati2.nar"
 END
 
+STRINGTABLE
+BEGIN
+    IDS_ERROR_TITLE           					"错误"
+    IDS_WARNING_TITLE         					"警告"
+	IDS_NOTICE_TITLE							"注意"
+	IDS_NETWORK_HAS_COST			"您的网络可能是计费网络，是否继续安装？"
+	IDS_FAILED_TO_CREATE_DL_PROCESS	"创建下载进程失败"
+	IDS_FAILED_TO_DOWNLOAD_REQUIRED_FILE "下载必须的文件失败"
+	IDS_SSP_NOT_INSTALLED_TITLE		"SSP未安装"
+	IDS_SSP_NOT_INSTALLED_INFO		"SSP未安装，此程序是运行ghost的基础平台\n点击确认以安装SSP并继续\n若已安装SSP，请关掉SSP并在接下来的安装路径选择中选择现有的SSP路径以更新SSP至最新版本"
+	IDS_FAILED_TO_CREATE_INSTALLATION_FOLDER "未能创建安装文件夹\n请考虑以管理员运行此程序或检查安装路径"
+	IDS_FAILED_TO_INSTALL_SSP		"未能安装SSP"
+	IDS_PLEASE_ENTER_THE_PATH		"请输入路径"
+	IDS_SELECT_THE_SSP_INSTALLATION_PATH "选择SSP安装路径"
+END
+
 /////////////////////////////////////////////////////////////////////////////
 //
 // Icon

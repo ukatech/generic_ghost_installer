@@ -1,5 +1,4 @@
-﻿//{{NO_DEPENDENCIES}}
-// Microsoft Visual C++ 生成的包含文件。
+﻿// Microsoft Visual C++ 生成的包含文件。
 // 供 ghost_installer.rc 使用
 //
 #include <windows.h>
@@ -12,6 +11,19 @@
 
 #define IDS_NAR_URL						100
 #define IDS_NAR_FILE_NAME				101
+
+#define IDS_ERROR_TITLE					1000
+#define IDS_WARNING_TITLE				1001
+#define IDS_NOTICE_TITLE				1002
+#define IDS_NETWORK_HAS_COST			1003
+#define IDS_FAILED_TO_CREATE_DL_PROCESS	1004
+#define IDS_FAILED_TO_DOWNLOAD_REQUIRED_FILE 1005
+#define IDS_SSP_NOT_INSTALLED_TITLE		1006
+#define IDS_SSP_NOT_INSTALLED_INFO		1007
+#define IDS_FAILED_TO_CREATE_INSTALLATION_FOLDER 1008
+#define IDS_FAILED_TO_INSTALL_SSP		1009
+#define IDS_PLEASE_ENTER_THE_PATH		1010
+#define IDS_SELECT_THE_SSP_INSTALLATION_PATH 1011
 
 // Next default values for new objects
 //

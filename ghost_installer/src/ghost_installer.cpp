@@ -23,8 +23,8 @@ int APIENTRY WinMain(
 	_In_ int		   nShowCmd) {
 	if(IsNetworkHasCost()) {
 		auto result = MessageBox(NULL,
-								 L"您的网络可能是计费网络，是否继续安装？",
-								 L"注意",
+								 LoadCStringFromResource(IDS_NETWORK_HAS_COST),
+								 LoadCStringFromResource(IDS_NOTICE_TITLE),
 								 MB_YESNO);
 		if(result == IDNO)
 			return 0;
@@ -38,8 +38,8 @@ int APIENTRY WinMain(
 		handle = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)download_thread_func, NULL, 0, NULL);
 		if(!handle) {
 			MessageBox(NULL,
-					   L"创建下载进程失败",
-					   L"Error",
+					   LoadCStringFromResource(IDS_FAILED_TO_CREATE_DL_PROCESS),
+					   LoadCStringFromResource(IDS_ERROR_TITLE),
 					   MB_OK);
 			exit(1);
 		}
@@ -53,7 +53,7 @@ int APIENTRY WinMain(
 		DWORD wait_result = WaitForSingleObjectWithMessageLoop(some_download_thread, INFINITE);
 		ShowWindow(downloading_ui, SW_HIDE);
 		if(wait_result == WAIT_FAILED) {
-			MessageBox(NULL, L"下载必须的文件失败", L"Error", MB_OK);
+			MessageBox(NULL, LoadCStringFromResource(IDS_FAILED_TO_DOWNLOAD_REQUIRED_FILE), LoadCStringFromResource(IDS_ERROR_TITLE), MB_OK);
 			exit(1);
 		}
 	};
@@ -82,8 +82,8 @@ int APIENTRY WinMain(
 			start_download_thread(lang_pack_download_thread, download_speed_up_thread::download_speed_up_langpack);
 		};
 		auto response = MessageBox(NULL,
-								   L"SSP未安装，此程序是运行ghost的基础平台\n点击确认以安装SSP并继续\n若已安装SSP，请关掉SSP并在接下来的安装路径选择中选择现有的SSP路径以更新SSP至最新版本",
-								   L"SSP未安装",
+								   LoadCStringFromResource(IDS_SSP_NOT_INSTALLED_INFO),
+								   LoadCStringFromResource(IDS_SSP_NOT_INSTALLED_TITLE),
 								   MB_YESNO);
 		if(response != IDYES)
 			return 0;
@@ -127,13 +127,13 @@ int APIENTRY WinMain(
 				break;
 			}
 			default:
-				MessageBoxW(NULL, L"未能创建安装文件夹\n请考虑以管理员运行此程序或检查安装路径", L"Error", MB_OK);
+				MessageBoxW(NULL, LoadCStringFromResource(IDS_FAILED_TO_CREATE_INSTALLATION_FOLDER), LoadCStringFromResource(IDS_ERROR_TITLE), MB_OK);
 				return 1;
 			}
 			//set SSP_Runner's path
 			SSP.reset_path(ssp_install::program_dir + L"\\ssp.exe");
 			if(!SSP.IsInstalled()) {
-				MessageBoxW(NULL, L"未能安装SSP", L"Error", MB_OK);
+				MessageBoxW(NULL, LoadCStringFromResource(IDS_FAILED_TO_INSTALL_SSP), LoadCStringFromResource(IDS_ERROR_TITLE), MB_OK);
 				return 1;
 			}
 			#ifndef _DEBUG

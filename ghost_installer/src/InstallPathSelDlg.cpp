@@ -15,8 +15,8 @@ bool get_edit_Dia_text_as_path(std::wstring& path, HWND hDlg, WORD IDC) {
 										(LPARAM)0);
 	if(pathlen == 0) {
 		MessageBox(hDlg,
-				   L"请输入路径",
-				   L"Error",
+				   LoadCStringFromResource(IDS_PLEASE_ENTER_THE_PATH),
+				   LoadCStringFromResource(IDS_ERROR_TITLE),
 				   MB_OK);
 		return false;
 	}
@@ -62,7 +62,7 @@ LRESULT CALLBACK InstallPathSelDlgProc(HWND hDlg, UINT message, WPARAM wParam, L
 				ZeroMemory(&bi, sizeof(bi));
 				bi.hwndOwner	  = hDlg;
 				bi.pszDisplayName = new wchar_t[MAX_PATH];
-				bi.lpszTitle	  = L"选择SSP安装路径";
+				bi.lpszTitle	  = LoadCStringFromResource(IDS_SELECT_THE_SSP_INSTALLATION_PATH);
 				bi.ulFlags		  = BIF_RETURNONLYFSDIRS;
 				LPITEMIDLIST pidl = SHBrowseForFolder(&bi);
 				if(pidl != NULL) {
