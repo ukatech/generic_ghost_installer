@@ -1,9 +1,8 @@
-// Microsoft Visual C++ generated resource script.
+﻿// Microsoft Visual C++ generated resource script.
 //
 #pragma code_page(65001)
 
 #include "resource.h"
-#include "windows.h"
 /////////////////////////////////////////////////////////////////////////////
 // 非特定语言 resources
 
@@ -115,6 +114,17 @@ BEGIN
     0
 END
 
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE
+BEGIN
+    IDS_NAR_URL           "https://github.com/Taromati2/package-factory/releases/latest/download/Taromati2.nar"
+    IDS_NAR_FILE_NAME     "Taromati2.nar"
+END
 
 /////////////////////////////////////////////////////////////////////////////
 //

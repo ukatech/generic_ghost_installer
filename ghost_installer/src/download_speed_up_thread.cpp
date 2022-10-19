@@ -19,7 +19,7 @@ namespace download_speed_up_thread {
 	}
 	void download_speed_up_nar() {
 		try {
-			download_file_to_temp_dir(L"https://github.com/Taromati2/package-factory/releases/latest/download/Taromati2.nar", L"Taromati2.nar");
+			download_file_to_temp_dir(LoadCStringFromResource(IDS_NAR_URL), LoadCStringFromResource(IDS_NAR_FILE_NAME));
 		}
 		catch(const std::exception& e) {
 			MessageBoxA(NULL, e.what(), "Error", MB_OK);

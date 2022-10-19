@@ -66,7 +66,7 @@ int APIENTRY WinMain(
 	if(SSP.IsInstalled()) {
 		start_nar_download_thread();
 	install_ghost:
-		auto nar_file = std::wstring(get_temp_path()) + L"Taromati2.nar";
+		auto nar_file = std::wstring(get_temp_path()) + LoadCStringFromResource(IDS_NAR_FILE_NAME);
 		wait_for(nar_download_thread);
 		#ifndef _DEBUG
 			SSP.install_nar_and_delete_source_if_succes(nar_file);
