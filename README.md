@@ -12,7 +12,36 @@
 
 - 图标  
   ![图片](https://user-images.githubusercontent.com/31927825/196833419-58874125-2ce2-4a52-a40c-619be3f6d183.png)
-- 版本信息  
-  ![图片](https://user-images.githubusercontent.com/31927825/196833485-6d30ede8-ade9-4116-acc8-f45ed6d5bd40.png)
 - NAR文件信息  
   ![图片](https://user-images.githubusercontent.com/31927825/196833448-12eb4a98-0550-4008-85ab-bd46cac4e879.png)
+  注意：保留字符串末尾的`\x00`，否则会出现错误
+- 版本信息  
+  ![图片](https://user-images.githubusercontent.com/31927825/196833485-6d30ede8-ade9-4116-acc8-f45ed6d5bd40.png)
+
+## How to use  
+
+Download the latest release and [ResourceHacker](http://www.angusj.com/resourcehacker/)  
+Use ResourceHacker to open the `exe` file in the release and customise your `exe` file  
+Common modifications.
+
+- Icons  
+  ![Image](https://user-images.githubusercontent.com/31927825/196833419-58874125-2ce2-4a52-a40c-619be3f6d183.png)
+- NAR file information  
+  ![image](https://user-images.githubusercontent.com/31927825/196833448-12eb4a98-0550-4008-85ab-bd46cac4e879.png)
+  Note: Keep the `\x00` at the end of the string, otherwise an error will occur
+- Version information  
+  ![image](https://user-images.githubusercontent.com/31927825/196833485-6d30ede8-ade9-4116-acc8-f45ed6d5bd40.png)
+
+## 使用方法  
+
+最新版のダウンロードと[ResourceHacker](http://www.angusj.com/resourcehacker/)  
+ResourceHackerを使って、リリースに含まれる `exe` ファイルを開き、`exe` ファイルをカスタマイズしてください。 
+共通の修正点
+
+- アイコンについて  
+  ![Image](https://user-images.githubusercontent.com/31927825/196833419-58874125-2ce2-4a52-a40c-619be3f6d183.png)
+- NARファイル情報  
+  ![image](https://user-images.githubusercontent.com/31927825/196833448-12eb4a98-0550-4008-85ab-bd46cac4e879.png)
+  Note: `xx00` を文字列の末尾につけておくと、エラーが発生します。
+- バージョン情報  
+  ![image](https://user-images.githubusercontent.com/31927825/196833485-6d30ede8-ade9-4116-acc8-f45ed6d5bd40.png)
