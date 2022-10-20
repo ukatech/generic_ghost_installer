@@ -179,7 +179,7 @@ IDD_DOWNLOADING DIALOGEX 0, 0, 158, 52
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    CTEXT           "必要な書類をダウンロード中",IDC_STATIC,8, 12, 142, 24
+    CTEXT           "必要なドキュメントをダウンロード中",IDC_STATIC,8, 12, 142, 24
 END
 
 /////////////////////////////////////////////////////////////////////////////
@@ -191,7 +191,7 @@ STRINGTABLE
 BEGIN
     IDS_ERROR_TITLE           					"エラー"
     IDS_WARNING_TITLE         					"警告"
-	IDS_NOTICE_TITLE							"備考"
+	IDS_NOTICE_TITLE							"通知"
 	IDS_NETWORK_HAS_COST			"あなたのネットワークは従量課金制かもしれませんが、インストールを続けますか？"
 	IDS_FAILED_TO_CREATE_DL_PROCESS	"ダウンロードプロセスの作成に失敗しました"
 	IDS_FAILED_TO_DOWNLOAD_REQUIRED_FILE "必要なファイルのダウンロードに失敗しました"
