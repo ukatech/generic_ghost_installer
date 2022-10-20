@@ -1,8 +1,8 @@
 ﻿# generic_ghost_installer  
 
-- ch
-- jp
-- en
+- [ch](#如何使用)
+- [jp](#使用方法)
+- [en](#how-to-use)
 
 ## 如何使用  
 
