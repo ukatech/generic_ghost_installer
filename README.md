@@ -42,6 +42,6 @@ ResourceHackerを使って、リリースに含まれる `exe` ファイルを�
   ![Image](https://user-images.githubusercontent.com/31927825/196833419-58874125-2ce2-4a52-a40c-619be3f6d183.png)
 - NARファイル情報  
   ![image](https://user-images.githubusercontent.com/31927825/196833448-12eb4a98-0550-4008-85ab-bd46cac4e879.png)
-  Note: `xx00` を文字列の末尾につけておかないと、エラーが発生します。
+  Note: `\x00` を文字列の末尾につけておかないと、エラーが発生します。
 - バージョン情報  
   ![image](https://user-images.githubusercontent.com/31927825/196833485-6d30ede8-ade9-4116-acc8-f45ed6d5bd40.png)
