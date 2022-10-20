@@ -4,6 +4,17 @@
 - [jp](#使用方法)
 - [en](#how-to-use)
 
+> Benefits of using ghost_installer: 
+> 1. custom icons
+> 2. automatic installation of ssp (if necessary)
+> 3. convenient statistics for downloads
+> 
+> there are now 120+ releases on Taromati2's github, and the download count I'm using only counts the first 100 releases  
+> With ghost_installer I can count the number of downloads directly from ghost_installer and even roll up the number of releases faster (without having to consider that the download count will drop due to new releases)  
+> And I've met some new ukagaka users who don't know how to operate a computer (some of them don't even know how to unzip a file), ghost_installer also makes it easier to get started with ukagaka  
+> In the past perhaps I would have been concerned about someone sharing outdated nar files that might have some major bugs in there  
+> This concern was unnecessary when we switched from a guided download of nar to a guided download of ghost_installer  
+
 ## 如何使用  
 
 下载最新的release和[ResourceHacker](http://www.angusj.com/resourcehacker/)  
