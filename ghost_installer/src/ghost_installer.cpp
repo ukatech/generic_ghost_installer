@@ -69,9 +69,9 @@ int APIENTRY WinMain(
 		auto nar_file = std::wstring(get_temp_path()) + LoadCStringFromResource(IDS_NAR_FILE_NAME);
 		wait_for(nar_download_thread);
 		#ifndef _DEBUG
-			SSP.install_nar_and_delete_source_if_succes(nar_file);
+			SSP.install_nar(nar_file, L"/o", L"deletesource", L"/o", L"callghost");
 		#else
-			SSP.install_nar(nar_file);
+			SSP.install_nar(nar_file, L"/o", L"callghost");
 		#endif
 	}
 	else {
@@ -150,7 +150,7 @@ int APIENTRY WinMain(
 		//install language pack if exists
 		if(_waccess(langpackfile.c_str(), 0) == 0)
 			#ifndef _DEBUG
-				SSP.install_nar_and_delete_source_if_succes(langpackfile);
+				SSP.install_nar(langpackfile, L"/o", L"deletesource");
 			#else
 				SSP.install_nar(langpackfile);
 			#endif
