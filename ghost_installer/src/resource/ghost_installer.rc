@@ -74,22 +74,6 @@ BEGIN
 END
 #endif    // APSTUDIO_INVOKED
 
-
-/////////////////////////////////////////////////////////////////////////////
-//
-// AFX_DIALOG_LAYOUT
-//
-
-IDD_INSTALLATION_PATH_SELECTION AFX_DIALOG_LAYOUT
-BEGIN
-    0
-END
-
-IDD_DOWNLOADING AFX_DIALOG_LAYOUT
-BEGIN
-    0
-END
-
 /////////////////////////////////////////////////////////////////////////////
 //
 // String Table
@@ -141,7 +125,7 @@ IDD_DOWNLOADING DIALOGEX 0, 0, 158, 52
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    LTEXT           "所需文件下载中",IDC_STATIC,47,22,63,8
+    CTEXT           "所需文件下载中",IDC_STATIC,8, 12, 142, 24
 END
 
 /////////////////////////////////////////////////////////////////////////////
@@ -186,8 +170,8 @@ CAPTION "インストールパスの選択"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
     DEFPUSHBUTTON   "決定",IDOK,169,39,50,14
-    PUSHBUTTON      "キャンセルについて",IDCANCEL,251,39,50,14
-    PUSHBUTTON      "ブラウズ",IDSELECT,265,18,36,12
+    PUSHBUTTON      "キャンセルについて",IDCANCEL,222, 39, 83, 14 
+    PUSHBUTTON      "ブラウズ",IDSELECT,265,18,40,12
     EDITTEXT        IDC_PATHEDIT,16,18,244,12,ES_AUTOHSCROLL
 END
 
@@ -195,7 +179,7 @@ IDD_DOWNLOADING DIALOGEX 0, 0, 158, 52
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    LTEXT           "必要な書類をダウンロード中",IDC_STATIC,47,22,63,8
+    CTEXT           "必要な書類をダウンロード中",IDC_STATIC,8, 12, 142, 24
 END
 
 /////////////////////////////////////////////////////////////////////////////
@@ -248,7 +232,7 @@ IDD_DOWNLOADING DIALOGEX 0, 0, 158, 52
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    LTEXT           "Required documents are being downloaded",IDC_STATIC,47,22,63,8
+    CTEXT           "Required documents are being downloaded",IDC_STATIC,8, 12, 142, 24
 END
 
 /////////////////////////////////////////////////////////////////////////////
