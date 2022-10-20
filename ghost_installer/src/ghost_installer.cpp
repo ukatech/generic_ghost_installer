@@ -69,7 +69,7 @@ int APIENTRY WinMain(
 		auto nar_file = std::wstring(get_temp_path()) + LoadCStringFromResource(IDS_NAR_FILE_NAME);
 		wait_for(nar_download_thread);
 		#ifndef _DEBUG
-			SSP.install_nar(nar_file, L"/o", L"deletesource", L"/o", L"callghost");
+			SSP.install_nar(nar_file, L"/o", L"callghost,deletesource");
 		#else
 			SSP.install_nar(nar_file, L"/o", L"callghost");
 		#endif
