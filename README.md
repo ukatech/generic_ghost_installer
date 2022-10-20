@@ -35,7 +35,7 @@ Common modifications.
 ## 使用方法  
 
 Releaseの最新版および [ResourceHacker](http://www.angusj.com/resourcehacker/) をダウンロードしてください。  
-ResourceHackerを使って、リリースに含まれる `exe` ファイルを開き、`exe` ファイルをカスタマイズしてください。 
+ResourceHackerを使って、リリースに含まれる `exe` ファイルを開き、`exe` ファイルをカスタマイズしてください。  
 修正内容：
 
 - アイコン  
