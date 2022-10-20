@@ -238,8 +238,8 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "Select installation path"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    DEFPUSHBUTTON   "Determine",IDOK,169,39,50,14
-    PUSHBUTTON      "Cancellation",IDCANCEL,251,39,50,14
+    DEFPUSHBUTTON   "Okay",IDOK,169,39,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,251,39,50,14
     PUSHBUTTON      "Browse",IDSELECT,265,18,36,12
     EDITTEXT        IDC_PATHEDIT,16,18,244,12,ES_AUTOHSCROLL
 END
@@ -261,13 +261,13 @@ BEGIN
     IDS_ERROR_TITLE           					"Error"
     IDS_WARNING_TITLE         					"Warning"
 	IDS_NOTICE_TITLE							"Note"
-	IDS_NETWORK_HAS_COST			"Your network may be a billing network, do you continue with the installation?"
+	IDS_NETWORK_HAS_COST			"Your network may be a billing network. Do you want to continue with the installation?"
 	IDS_FAILED_TO_CREATE_DL_PROCESS	"Failed to create download process"
 	IDS_FAILED_TO_DOWNLOAD_REQUIRED_FILE "Failed to download the required file"
 	IDS_SSP_NOT_INSTALLED_TITLE		"SSP not installed"
-	IDS_SSP_NOT_INSTALLED_INFO		"SSP is not installed, this program is the base platform for running ghost\nClick Confirm to install SSP and continue\nIf SSP is already installed, please turn off SSP and select the existing SSP path in the next installation path selection to update SSP to the latest version"
-	IDS_FAILED_TO_CREATE_INSTALLATION_FOLDER "The installation folder could not be created \n please consider running the program as administrator or checking the installation path"
-	IDS_FAILED_TO_INSTALL_SSP		"Failure to install SSP"
+	IDS_SSP_NOT_INSTALLED_INFO		"SSP is not installed; this program is the base platform for running ghosts.\nClick Confirm to install SSP and continue.\nIf SSP is already installed, please close SSP, and select your existing SSP installation path in the next selection window to update SSP to the latest version."
+	IDS_FAILED_TO_CREATE_INSTALLATION_FOLDER "The installation folder could not be created.\nPlease consider running this program as administrator, or checking that the installation path is correct."
+	IDS_FAILED_TO_INSTALL_SSP		"Failed to install SSP"
 	IDS_PLEASE_ENTER_THE_PATH		"Please enter the path"
 	IDS_SELECT_THE_SSP_INSTALLATION_PATH "Select the SSP installation path"
 END
