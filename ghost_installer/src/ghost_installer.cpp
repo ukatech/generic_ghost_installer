@@ -62,17 +62,25 @@ int APIENTRY WinMain(
 		DWORD wait_result = WaitForSingleObject(some_download_thread, 0);
 		return wait_result == WAIT_OBJECT_0;
 	};
-	
+	std::wstring langpackfile{};
+
 	if(SSP.IsInstalled()) {
 		start_nar_download_thread();
 	install_ghost:
 		auto nar_file = std::wstring(get_temp_path()) + LoadCStringFromResource(IDS_NAR_FILE_NAME);
 		wait_for(nar_download_thread);
-		#ifndef _DEBUG
-			SSP.install_nar(nar_file, L"/o", L"callghost,deletesource");
-		#else
-			SSP.install_nar(nar_file, L"/o", L"callghost");
-		#endif
+		if(langpackfile.empty())
+			#ifndef _DEBUG
+				SSP.install_nar(nar_file, L"/o", L"callghost,deletesource");
+			#else
+				SSP.install_nar(nar_file, L"/o", L"callghost");
+			#endif
+		else
+			#ifndef _DEBUG
+				SSP.install_nar(langpackfile, nar_file, L"/o", L"callghost,deletesource");
+			#else
+				SSP.install_nar(langpackfile, nar_file, L"/o", L"callghost");
+			#endif
 	}
 	else {
 		auto ssp_download_thread = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)download_speed_up_thread::download_speed_up_ssp, NULL, 0, NULL);
@@ -141,19 +149,14 @@ int APIENTRY WinMain(
 			DeleteFileW(ssp_file.c_str());
 			#endif
 		}
-		auto langpackfile = std::wstring(get_temp_path()) + L"langpack.nar";
+		langpackfile = std::wstring(get_temp_path()) + L"langpack.nar";
 		//wait 
 		wait_for(lang_pack_download_thread);
 		CloseHandle(lang_pack_download_thread);
 		if(!nar_download_thread)
 			start_nar_download_thread();
-		//install language pack if exists
-		if(_waccess(langpackfile.c_str(), 0) == 0)
-			#ifndef _DEBUG
-				SSP.install_nar(langpackfile, L"/o", L"deletesource");
-			#else
-				SSP.install_nar(langpackfile);
-			#endif
+		if(_waccess(langpackfile.c_str(), 0) != 0)
+			langpackfile.clear();
 		//install ghost
 		goto install_ghost;
 	}
