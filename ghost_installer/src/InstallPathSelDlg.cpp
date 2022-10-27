@@ -68,8 +68,11 @@ LRESULT CALLBACK InstallPathSelDlgProc(HWND hDlg, UINT message, WPARAM wParam, L
 				if(pidl != NULL) {
 					SHGetPathFromIDList(pidl, bi.pszDisplayName);
 					program_dir = bi.pszDisplayName;
-					if(!program_dir.ends_with(L"SSP") || !program_dir.ends_with(L"SSP\\"))
+					if(!program_dir.ends_with(L"SSP") || !program_dir.ends_with(L"SSP\\") || !program_dir.ends_with(L"ssp") || !program_dir.ends_with(L"ssp\\"))
 						program_dir += L"\\SSP\\";
+					auto pos = program_dir.find(L"\\\\");
+					if(pos != std::wstring::npos)
+						program_dir.replace(pos, 2, L"\\");
 					SetDlgItemText(hDlg, IDC_PATHEDIT, program_dir.c_str());
 				}
 				delete[] bi.pszDisplayName;

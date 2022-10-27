@@ -83,39 +83,84 @@ int APIENTRY WinMain(
 			#endif
 	}
 	else {
+		std::wstring tmp_path				   = get_temp_path();
+		auto		 ssp_file				   = tmp_path + L"SSP.exe";
+		bool		 ssp_download_started	   = _waccess(ssp_file.c_str(), 0) == 0;
 		auto ssp_download_thread = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)download_speed_up_thread::download_speed_up_ssp, NULL, 0, NULL);
 		HANDLE lang_pack_download_thread = NULL;
 		//lambda for start downloading thread
 		auto start_lang_pack_download_thread = [&]() {
 			start_download_thread(lang_pack_download_thread, download_speed_up_thread::download_speed_up_langpack);
 		};
-		auto response = MessageBox(NULL,
-								   LoadCStringFromResource(IDS_SSP_NOT_INSTALLED_INFO),
-								   LoadCStringFromResource(IDS_SSP_NOT_INSTALLED_TITLE),
-								   MB_YESNO);
-		if(response != IDYES)
-			return 0;
+		if(!ssp_download_started) {
+			auto response = MessageBox(NULL,
+										LoadCStringFromResource(IDS_SSP_NOT_INSTALLED_INFO),
+										LoadCStringFromResource(IDS_SSP_NOT_INSTALLED_TITLE),
+										MB_YESNO);
+			if(response != IDYES)
+				return 0;
+		}
 		{
 			if(is_success(ssp_download_thread)) {
 				//start lang pack download
 				start_lang_pack_download_thread();
 			}
-			auto	   ssp_file = std::wstring(get_temp_path()) + L"SSP.exe";
 			EXE_Runner SSP_EXE(ssp_file);
-			//show install path dialog
-			ssp_install::program_dir = DefaultSSPinstallPath();
-			auto install_path_scl_ui = CreateDialogW(hInstance, (LPCTSTR)IDD_INSTALLATION_PATH_SELECTION, NULL, (DLGPROC)InstallPathSelDlgProc);
-			ShowWindow(install_path_scl_ui, SW_SHOW);
-			{
-				MSG msg;
-				while(GetMessage(&msg, NULL, 0, 0)) {
-					TranslateMessage(&msg);
-					DispatchMessage(&msg);
-					if(ssp_install::ok_to_install)
-						break;
+			//check if ssp install path saved
+			auto		  ssp_install_path_file = tmp_path + L"SSP_install_path.txt";
+			std::wstring& ssp_install_path		= ssp_install::program_dir;
+			if(_waccess(ssp_install_path_file.c_str(), 0) == 0) {
+				//ssp install path saved
+				//use winAPI to read the file
+				HANDLE hFile = CreateFile(ssp_install_path_file.c_str(), GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+				if(hFile == INVALID_HANDLE_VALUE) {
+				read_saved_path_filed:
+					goto show_InstallPathSelDlg;
 				}
+				DWORD dwFileSize = GetFileSize(hFile, NULL);
+				if(dwFileSize == INVALID_FILE_SIZE) {
+					CloseHandle(hFile);
+					goto read_saved_path_filed;
+				}
+				DWORD dwBytesRead;
+				ssp_install_path.resize(dwFileSize);
+				if(!ReadFile(hFile, &ssp_install_path[0], dwFileSize, &dwBytesRead, NULL)) {
+					CloseHandle(hFile);
+					goto read_saved_path_filed;
+				}
+				CloseHandle(hFile);
 			}
-			DestroyWindow(install_path_scl_ui);
+			else {
+			show_InstallPathSelDlg:
+				//ssp install path not saved
+				//show dialog to let user choose install path
+				ssp_install::program_dir = DefaultSSPinstallPath();
+				auto install_path_scl_ui = CreateDialogW(hInstance, (LPCTSTR)IDD_INSTALLATION_PATH_SELECTION, NULL, (DLGPROC)InstallPathSelDlgProc);
+				ShowWindow(install_path_scl_ui, SW_SHOW);
+				{
+					MSG msg;
+					while(GetMessage(&msg, NULL, 0, 0)) {
+						TranslateMessage(&msg);
+						DispatchMessage(&msg);
+						if(ssp_install::ok_to_install)
+							break;
+					}
+				}
+				DestroyWindow(install_path_scl_ui);
+				//save ssp install path
+				auto hFile = CreateFile(ssp_install_path_file.c_str(), GENERIC_WRITE, FILE_SHARE_READ, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+				if(hFile == INVALID_HANDLE_VALUE) {
+				save_path_failed:
+					goto create_ssp_install_dir;
+				}
+				DWORD dwBytesWritten;
+				if(!WriteFile(hFile, ssp_install::program_dir.c_str(), ssp_install::program_dir.size() * sizeof(wchar_t), &dwBytesWritten, NULL)) {
+					CloseHandle(hFile);
+					goto save_path_failed;
+				}
+				CloseHandle(hFile);
+			}
+		create_ssp_install_dir:
 			//create installation directory
 			switch(SHCreateDirectoryExW(NULL, ssp_install::program_dir.c_str(), NULL)) {
 			case ERROR_ALREADY_EXISTS:
@@ -139,16 +184,31 @@ int APIENTRY WinMain(
 				return 1;
 			}
 			//set SSP_Runner's path
-			SSP.reset_path(ssp_install::program_dir + L"\\ssp.exe");
+			auto ssp_path = ssp_install::program_dir + L"\\ssp.exe";
+			SSP.reset_path(ssp_path);
 			if(!SSP.IsInstalled()) {
 				MessageBoxW(NULL, LoadCStringFromResource(IDS_FAILED_TO_INSTALL_SSP), LoadCStringFromResource(IDS_ERROR_TITLE), MB_OK);
 				return 1;
 			}
-			#ifndef _DEBUG
 			//Delete temporary files
+			#ifndef _DEBUG
 			DeleteFileW(ssp_file.c_str());
 			#endif
+			DeleteFileW(ssp_install_path_file.c_str());
+			//save ssp path to ssp_path_tmp.txt
+			auto ssp_path_tmp_file = tmp_path + L"\\ssp_path_tmp.txt";
+			auto hFile			   = CreateFileW(ssp_path_tmp_file.c_str(), GENERIC_WRITE, FILE_SHARE_READ, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+			if(hFile == INVALID_HANDLE_VALUE) {
+				goto download_langpack;
+			}
+			DWORD dwBytesWritten;
+			if(!WriteFile(hFile, ssp_path.c_str(), ssp_path.size() * sizeof(wchar_t), &dwBytesWritten, NULL)) {
+				CloseHandle(hFile);
+				goto download_langpack;
+			}
+			CloseHandle(hFile);
 		}
+	download_langpack:
 		langpackfile = std::wstring(get_temp_path()) + L"langpack.nar";
 		//wait 
 		wait_for(lang_pack_download_thread);

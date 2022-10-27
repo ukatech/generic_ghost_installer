@@ -14,7 +14,7 @@ namespace download_speed_up_thread {
 		}
 		catch(const std::exception& e) {
 			MessageBoxA(NULL, e.what(), "Error", MB_OK);
-			throw;
+			exit(1);
 		}
 	}
 	void download_speed_up_nar() {
@@ -23,7 +23,7 @@ namespace download_speed_up_thread {
 		}
 		catch(const std::exception& e) {
 			MessageBoxA(NULL, e.what(), "Error", MB_OK);
-			throw;
+			exit(1);
 		}
 	}
 	std::wstring GetLangPackUrl(LANGID langid) {
@@ -46,7 +46,7 @@ namespace download_speed_up_thread {
 		}
 		catch(const std::exception& e) {
 			MessageBoxA(NULL, e.what(), "Error", MB_OK);
-			throw;
+			exit(1);
 		}
 	}
 }		// namespace download_speed_up_thread
