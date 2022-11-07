@@ -58,8 +58,8 @@ ResourceHackerを使って、リリースに含まれる `exe` ファイルを�
 - アイコン  
   ![Image](https://user-images.githubusercontent.com/31927825/196833419-58874125-2ce2-4a52-a40c-619be3f6d183.png)  
   適当なアイコンを持っていない場合は、オンラインで好みのicoファイルを探すか、ResourceHackerや7zipを使って既存のexeファイルからicoファイルを取り出してください。  
-  希望すれば、インターネット上でpngからicoへの変換サイトやソフトを探すこともできますよ。  
-  それが難しい場合は、この[icoファイル](./imgs/Installer.ico)、ちょっと前世紀的ではありますが  
+  お望みなら、インターネット上でpngからicoへの変換サイトやソフトを探すこともできます。  
+  それが難しい場合は、この[icoファイル](./imgs/Installer.ico)を使ってもよいでしょう、ちょっと前時代的ではありますが。  
 - NARファイル情報  
   ![image](https://user-images.githubusercontent.com/31927825/196833448-12eb4a98-0550-4008-85ab-bd46cac4e879.png)  
   Note: `\x00` を文字列の末尾につけておかないと、エラーが発生します。
