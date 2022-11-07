@@ -22,9 +22,12 @@
 常见修改内容：
 
 - 图标  
-  ![图片](https://user-images.githubusercontent.com/31927825/196833419-58874125-2ce2-4a52-a40c-619be3f6d183.png)
+  ![图片](https://user-images.githubusercontent.com/31927825/196833419-58874125-2ce2-4a52-a40c-619be3f6d183.png)  
+  如果你没有合适的图标，可以在网上寻找喜欢的ico文件，或者使用ResourceHacker或者7zip从现有的exe文件中取出ico文件  
+  如果你愿意，你还可以在网上找到一些png转换成ico的网站或者软件！  
+  实在没有办法，你也可以使用这个[ico文件](./imgs/Installer.ico)，尽管它有点上个世纪的风格  
 - NAR文件信息  
-  ![图片](https://user-images.githubusercontent.com/31927825/196833448-12eb4a98-0550-4008-85ab-bd46cac4e879.png)
+  ![图片](https://user-images.githubusercontent.com/31927825/196833448-12eb4a98-0550-4008-85ab-bd46cac4e879.png)  
   注意：保留字符串末尾的`\x00`，否则会出现错误
 - 版本信息  
   ![图片](https://user-images.githubusercontent.com/31927825/196833485-6d30ede8-ade9-4116-acc8-f45ed6d5bd40.png)
@@ -36,9 +39,12 @@ Use ResourceHacker to open the `exe` file in the release and customise your `exe
 Common modifications.
 
 - Icons  
-  ![Image](https://user-images.githubusercontent.com/31927825/196833419-58874125-2ce2-4a52-a40c-619be3f6d183.png)
+  ![Image](https://user-images.githubusercontent.com/31927825/196833419-58874125-2ce2-4a52-a40c-619be3f6d183.png)  
+  If you don't have a suitable icon, you can look for a favourite ico file online, or use ResourceHacker or 7zip to extract the ico file from an existing exe file  
+  If you wish, you can also find some png to ico conversion sites or software on the internet!  
+  If that's not an option, you can also use this [ico file](./imgs/Installer.ico), although it's a bit last century  
 - NAR file information  
-  ![image](https://user-images.githubusercontent.com/31927825/196833448-12eb4a98-0550-4008-85ab-bd46cac4e879.png)
+  ![image](https://user-images.githubusercontent.com/31927825/196833448-12eb4a98-0550-4008-85ab-bd46cac4e879.png)  
   Note: Keep the `\x00` at the end of the string, otherwise an error will occur
 - Version information  
   ![image](https://user-images.githubusercontent.com/31927825/196833485-6d30ede8-ade9-4116-acc8-f45ed6d5bd40.png)
@@ -50,9 +56,12 @@ ResourceHackerを使って、リリースに含まれる `exe` ファイルを�
 修正内容：
 
 - アイコン  
-  ![Image](https://user-images.githubusercontent.com/31927825/196833419-58874125-2ce2-4a52-a40c-619be3f6d183.png)
+  ![Image](https://user-images.githubusercontent.com/31927825/196833419-58874125-2ce2-4a52-a40c-619be3f6d183.png)  
+  適当なアイコンを持っていない場合は、オンラインで好みのicoファイルを探すか、ResourceHackerや7zipを使って既存のexeファイルからicoファイルを取り出してください。  
+  希望すれば、インターネット上でpngからicoへの変換サイトやソフトを探すこともできますよ。  
+  それが難しい場合は、この[icoファイル](./imgs/Installer.ico)、ちょっと前世紀的ではありますが  
 - NARファイル情報  
-  ![image](https://user-images.githubusercontent.com/31927825/196833448-12eb4a98-0550-4008-85ab-bd46cac4e879.png)
+  ![image](https://user-images.githubusercontent.com/31927825/196833448-12eb4a98-0550-4008-85ab-bd46cac4e879.png)  
   Note: `\x00` を文字列の末尾につけておかないと、エラーが発生します。
 - バージョン情報  
   ![image](https://user-images.githubusercontent.com/31927825/196833485-6d30ede8-ade9-4116-acc8-f45ed6d5bd40.png)
