@@ -93,7 +93,7 @@ END
 
 // Icon with lowest ID value placed first to ensure application icon
 // remains consistent on all systems.
-IDI_ICON                ICON                    "kikka.ico"
+IDI_ICON                ICON                    "giapp.ico"
 
 #endif    // 非特定语言 resources
 /////////////////////////////////////////////////////////////////////////////
